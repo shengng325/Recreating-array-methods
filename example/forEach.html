@@ -1,0 +1,47 @@
+<script src="../tinytest.js"></script>
+<script src="adder.js"></script>
+<script>
+
+function forEach (array, callback, optionalThis){
+  var forEachCallback = callback;
+  if (optionalThis) {
+    forEachCallback = callback.bind(optionalThis);
+  }
+  for (var i = 0; i < array.length; i++){
+    forEachCallback(array[i], i, array);
+  }
+}
+
+tests({
+  'It should run the callback function array.length times.': function() {
+   var numberOfTimesRun = 0;
+    forEach([1, 2, 3], function() {
+      numberOfTimesRun++;
+   });
+   eq(numberOfTimesRun, 3);
+  },
+  'It should pass in the ith element as the first argument to the callback.': function() {
+    forEach([1], function(number){
+      eq(number, 1);
+    })
+  },
+  'It should pass in the ith position as the second element to the callback.': function(){
+    forEach([1], function(number, index){
+      eq(index, 0);
+    });
+  },
+  'It should pass in the original array as the third element to the callback.':function(){
+    var testArray = [1, 2, 3];
+    forEach(testArray, function(number, index, originalArray){
+      eq(originalArray, testArray);
+    });
+  },
+
+  'It should accept an optional this object.': function(){
+    forEach([1], function(){
+      eq(this.description, 'I should be accesible inside of the callback');
+    }, {description: 'I should be accesible inside of the callback'});
+  }
+
+});
+</script>

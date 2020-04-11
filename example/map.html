@@ -1,0 +1,109 @@
+<script src="../tinytest.js"></script>
+<script src="adder.js"></script>
+<script>
+
+// Example 1 Run 3 times
+// map([1,2,3],callback(){});
+
+// Example 2 Callback has access to ith element
+// map([1,2,3],callback(number){
+//     console.log(number);
+// });
+
+// Example 3 Callback has access to index
+// map([1,2,3],callback(number,index){
+//     console.log(index);
+// });
+
+// Example 4 Callback has access to original array
+// map([1,2,3],callback(number,index,originalArray){
+//     console.log(originalArray);
+// });
+
+// Example 5 Optional this
+// map([1,2,3],callback(){
+//     console.log(this.name);
+// },{name: NTS});
+
+// Example 6
+// var originalArray = [1,2,3];
+// var mappedArray = map(originalArray,callback(){});
+// mappedArray != originalArray
+
+// Example 7
+// var originalArray = [1,2,3];
+// var mappedArray = map(originalArray,callback(element){
+//     return element * 2;
+// });
+// Expected mappedArray = [2,4,6]
+
+
+function map (array, callback, optionalThis){
+    var mapCallback = callback;
+    if (optionalThis) {
+        mapCallback = callback.bind(optionalThis);
+    }
+    var mappedArray = [];
+    for (var i = 0; i < array.length; i++){
+        if (i in array)
+            mappedArray[i] = mapCallback(array[i], i, array);
+    }
+    return mappedArray;
+};
+
+tests({
+'It should run the callback funtion array.length times': function() {
+    var numberOfCallbackTimes = 0;
+    map ([1,2,3], function () {
+        numberOfCallbackTimes++;
+    });
+    eq(numberOfCallbackTimes, 3);
+},
+'It should pass the ith element as the first argument to the callback funtion.': function() {
+    map ([5], function (number) {
+        eq(number, 5);
+    });   
+},
+'It should pass the ith position as the second argument to the callback funtion.': function() {
+    map ([5], function (number, index) {
+        eq(index, 0);
+    });     
+},
+'It should pass the original array as the third argument to the callback funtion.': function() {
+    originalArray = [1,2,3];
+    map (originalArray, function (number, index, array) {
+        eq(array, originalArray);
+    });      
+},
+'It should accept an optional this object.': function() {
+    map ([1,2,3], function (number, index, array) {
+        eq(this.objectTitle, 'some object name');
+    },{objectTitle: 'some object name'});   
+},
+'It should return an array.': function() {
+    var originalArray = [1,2,3];
+    var mappedArray = map(originalArray, function (){});
+    eq(Array.isArray(mappedArray), true);  
+},
+'It should return a new array, not the array being mapped.': function() {
+    var arrayBeingMapped = [];
+    var newArray = map(arrayBeingMapped, function (){});
+    eq(newArray != arrayBeingMapped, true);  
+},
+'It should return a mapped array.': function() {
+    var mappedArray = map([1], function (number){
+        return number * 4;
+    });
+    eq (mappedArray[0], 4);
+},
+'It should skil unassigned indexes.': function() {
+    var weirdArray = [,1];
+    var mappedArray = map(weirdArray, function doubleIt (number){
+        return number * 2;
+    });
+    eq (0 in mappedArray, false);
+    eq (mappedArray[1], 2);
+},
+
+});
+</script>

@@ -1,0 +1,187 @@
+<script src="../simpletest.js"></script>
+<script>
+
+
+
+//Function signature:
+// splice(array, start[, deleteCount[, item1[, item2[, ...]]]])
+
+//Return value:
+// array containing the deleted elements. If nothing removed, empty array is returned
+
+//Requirements:
+// It should delete [n] elements from starting index, where [n] is the deleteCount.
+// If no deleteCount, elements from starting index to the end will be deleted.
+// If deleteCount > count from starting index element to the last element, elements from starting index to the end will be deleted.
+// If deleteCount is 0, and no newElement exists, no change will be made.
+// If deleteCount is 0, and newElement exists, newElements will be inserted from the starting index.
+// if deleteCount,[n] > 0, and newElement exists, [n] elements will be deleted from start index, while newElements will be inserted from the start index.
+// It should return an array containing the deleted elements.
+// It should return an empty array if nothing is deleted.
+// If start > array length, no element will be deleted, but adding elements will start at index = array.length.
+// If start is negative, start index will be set to array.length - start.
+// If array.length + start is less than 0, start index will be set to 0.
+
+
+
+function splice (originalArray, start, deleteCount) {
+    var length = originalArray.length;
+    
+    //normalise unusual starting index based on start argument
+    if (start > length) {
+        startingIndex = length;
+    } else if (start < 0){
+        startingIndex = length + start;
+        if (startingIndex < 0)
+            startingIndex = 0;
+    } else {
+        startingIndex = start;
+    }
+
+    //find the index of last element to be deleted
+    //if deletedCount is provided
+    if (deleteCount || deleteCount === 0) {
+        if (deleteCount <= length - startingIndex) {
+            lastDeleteIndex = startingIndex + deleteCount - 1;
+        } else {
+            lastDeleteIndex = length - 1;
+        }
+    //if deleteCount is not provided
+    } else {
+        lastDeleteIndex = length - 1
+    }
+
+    //copy original array values to a temporary array
+    var temporaryArray = [];
+    for (var i = 0; i < originalArray.length; i++){
+        temporaryArray[i] = originalArray[i];
+    }
+
+    //clear original array (should not use array = [] as it will clear the reference address)
+    originalArray.length = 0;    
+
+    //copy temporary array values to original array while omiting deleted elements, and add additional arguments
+    var deletedArray = [];
+    var modifiedArrayIndex = 0;
+    var deletedArrayIndex = 0;
+    for (var i = 0; i < temporaryArray.length; i++){
+        //add elements to the array at the stated starting index
+        if (i === startingIndex && arguments.length > 2) {
+            for (var adderIndex = 3; adderIndex < arguments.length; adderIndex++) {
+                originalArray[modifiedArrayIndex] = arguments[adderIndex];
+                modifiedArrayIndex++;
+            }
+        }
+        //if it is not in deleted range, copy back the values to the original array  
+        if (!(i >= startingIndex && i <= lastDeleteIndex)){
+            originalArray[modifiedArrayIndex] = temporaryArray[i];
+            modifiedArrayIndex++;
+        //if it is in deleted range, elements would be store in a new array to be returned
+        } else {
+            deletedArray[deletedArrayIndex] = temporaryArray[i];
+            deletedArrayIndex++;
+        }
+    }
+
+    //add elements at the end of array (occurs when start argument is set to > array.length)
+    if (startingIndex === originalArray.length) {
+        for (var adderIndex = 3; adderIndex < arguments.length; adderIndex++) {
+                originalArray[modifiedArrayIndex] = arguments[adderIndex];
+                modifiedArrayIndex++;
+            }
+    }
+    return deletedArray;
+}
+
+tests({
+'It should delete [n] elements from starting index, where [n] is the deleteCount.': function(){
+    var array = [1,2,3];
+    splice(array, 1, 1);
+    eq(array[0], 1);
+    eq(array[1], 3);
+    eq(array.length, 2);
+    eq(array.hasOwnProperty(2), false);
+},
+'If no deleteCount, elements from starting index to the end will be deleted.': function(){
+    var array = [1,2,3];
+    splice(array, 1);
+    eq(array[0], 1);
+    eq(array.length, 1);
+    eq(array.hasOwnProperty(1), false);
+    eq(array.hasOwnProperty(2), false);
+},
+'If deleteCount > count from starting index element to the last element, elements from starting index to the end will be deleted.': function(){
+    var array = [1,2,3];
+    splice(array, 1, 10);
+    eq(array[0], 1);
+    eq(array.length, 1);
+    eq(array.hasOwnProperty(1), false);
+    eq(array.hasOwnProperty(2), false);
+},
+'If deleteCount is 0, and no newElement exists, no change will be made.': function(){
+    var array = [1,2,3];
+    splice(array, 1, 0);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array.length, 3);
+},
+'If deleteCount is 0, and newElement exists, newElements will be inserted from the starting index.': function(){
+    var array = [1,4];
+    splice(array, 1, 0, 2, 3);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array[3], 4);
+    eq(array.length, 4);
+},
+'if deleteCount,[n] > 0, and newElement exists, [n] elements will be deleted from start index, while newElements will be inserted from the start index.': function(){
+    var array = [1,4];
+    splice(array, 1, 1, 2, 3);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array.length, 3);
+},
+'It should return an array containing the deleted elements.': function(){
+    var array = [1,2,3];
+    var deletedArray = splice(array, 1, 2);
+    eq(deletedArray[0], 2);
+    eq(deletedArray[1], 3);
+    eq(deletedArray.length, 2);
+},
+'It should return an empty array if nothing is deleted.': function(){
+    var array = [1,2,3];
+    var deletedArray = splice(array, 1, 0);
+    eq(Array.isArray(deletedArray), true);
+    eq(deletedArray.length, 0);
+},
+'If start > array length, no element will be deleted, but adding elements will start at index = array.length.': function(){
+    var array = [1,2];
+    splice(array, 3, 1, 3);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array.length, 3);
+},
+'If start is negative, start index will be set to array.length - start.': function(){
+    // start index = array.length - start
+    // start index = 4 - 2 = 2
+    var array = [1,2,3,4];
+    splice(array, -2, 2);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array.length, 2);
+},
+'If array.length + start is less than 0, start index will be set to 0.': function(){
+    //array.length + start < 0
+    // 2 + (-3) < 0
+    var array = [2,3];
+    splice(array, -3, 0, 1);
+    eq(array[0], 1);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array.length, 3);
+},
+});
+</script>

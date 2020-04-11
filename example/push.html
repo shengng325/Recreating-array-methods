@@ -1,0 +1,76 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Function signature
+//push(array, element1[, ...[, elementN]])
+
+//Callback parameters:
+//array
+//elementN
+
+
+//Return value:
+//new length
+
+//Requirements:
+//It should determine the current array length
+//It should add elements to the end of array
+//It should return the new array length
+//It should add multiple arguments to the end of array
+//It should add undefined to the end of array
+
+//if array length does not exist, the index of added element is 0
+
+
+//strings are immutable
+//If the length property cannot be converted into a number, the index used is 0. 
+//length being nonexistent, in which case length will also be created.
+
+function push (array) {
+    length = array.length;
+    var i = 1;
+    for (var i = 1; i < arguments.length; i++){;
+         array[length + i - 1] = arguments[i];
+    }
+    return length;
+}
+
+
+
+tests({
+'It should determine the current array length.': function(){
+    var array = [1,2,3];
+    var pushOutput = push(array);
+    eq(pushOutput, 3);
+},
+'It should add elements to the end of array': function(){
+    var array = [1];
+    push(array, 2);
+    eq(array[1], 2);
+},
+'It should return the new array length': function(){
+    var array = [1];
+    push(array, 2);
+    eq(array.length, 2);
+},
+'It should add multiple arguments to the end of array': function(){
+    var array = [1];
+    push(array, 2, 3);
+    eq(array[1], 2);
+    eq(array[2], 3);
+    eq(array.length, 3);
+},
+'It should add undefined to the end of array': function(){
+    var array = [1];
+    push(array, undefined);
+    eq(array[1], undefined);
+    eq(array.length, 2);
+},
+'if array length does not exist, the index of added element is 0': function(){
+    var array = [];
+    push(array, 1);
+    eq(array[0], 1);
+},
+
+});
+</script>

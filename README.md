@@ -1,5 +1,11 @@
-Tiniest JavaScript unit testing library
-=======================================
+# Recreating JavaScript Array methods with Test Driven Development
+
+A good way to start learning Test Driven Development is to begin with simple stuffs.
+Here comes my approach of recreating multiple JavaScript Array methods with the tiniest JavaScript unit testing library. All methods are created based on Mozilla's [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array "MDN Web Docs").
+
+
+
+## Tiniest JavaScript unit testing library
 
 This is an in-browser JavaScript library I've been using for years. It's so small and simple that it never occured to me to open source it until I saw all the overly complicated alternatives that are out there.
 
@@ -10,8 +16,7 @@ If you're looking for a quick way to unit-test a JavaScript function/object in a
 *   [Download tinytest.js](https://rawgit.com/joewalnes/jstinytest/master/tinytest.js)
 *   [Example](https://github.com/joewalnes/jstinytest/tree/master/example)
 
-10 second tutorial
-------------------
+### **10 second tutorial**
 
 Download [tinytest.js](https://rawgit.com/joewalnes/jstinytest/master/tinytest.js) and put it somewhere in your web directory.
 
@@ -84,14 +89,3 @@ But, but, but. What about feature X?
 
 It probably doesn't have it. If you need that, you'll probably find it in one of the many more sophisticated frameworks out there. A more detailed discussion can be found [here](http://www.pinterest.com/pin/61431982391077742/).
 
-Projects using TinyTest
------------------------
-
-*   [Filtrex](https://github.com/joewalnes/filtrex) - A simple, safe, JavaScript Filter Expression compiler ([Tests](https://github.com/joewalnes/filtrex/blob/master/test/filtrex-test.html)) ([Results](https://rawgit.com/joewalnes/filtrex/master/test/filtrex-test.html))
-
-Other stuff
------------
-
-I also have [TinyTest for C](https://github.com/joewalnes/tinytest) that follows similar principles of simplicity.
-
-Now check out my other [GitHub projects](https://github.com/joewalnes) and follow [@joewalnes](https://twitter.com/joewalnes) on that Twitter thing.
